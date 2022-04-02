@@ -147,6 +147,8 @@ contract IdleRouter is OwnableUpgradeable {
         }
 
         trancheToken.transferFrom(msg.sender, address(this), _amount);
+        
+        // NOTE: no approval required for withdrawal!
         uint256 amountToReturn = isAATranche
             ? idleCdo.withdrawAA(_amount)
             : idleCdo.withdrawBB(_amount);
