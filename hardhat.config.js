@@ -22,7 +22,7 @@ module.exports = {
   networks: {
     hardhat: {
       deploy: ["deploy/local", "deploy/core", "deploy/tic", "deploy/pools"],
-    }
+    },
   },
   paths: {
     deploy: ["deploy/core"],
@@ -31,7 +31,7 @@ module.exports = {
   namedAccounts: {
     admin: {
       default: 0,
-    }
+    },
   },
   contractSizer: {
     alphaSort: true,
