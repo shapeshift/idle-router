@@ -1,5 +1,4 @@
 require("@nomiclabs/hardhat-waffle");
-require("hardhat-gas-reporter");
 require("hardhat-deploy");
 require("solidity-coverage");
 require("dotenv").config();
@@ -23,14 +22,6 @@ module.exports = {
   networks: {
     hardhat: {
       deploy: ["deploy/local", "deploy/core", "deploy/tic", "deploy/pools"],
-    },
-    goerli: {
-      deploy: ["deploy"],
-      url: process.env.GOERLI_URL,
-      accounts:
-        process.env.GOERLI_PRIVATE_KEY !== undefined
-          ? [process.env.GOERLI_PRIVATE_KEY]
-          : [],
     }
   },
   paths: {
