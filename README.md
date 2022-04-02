@@ -1,2 +1,5 @@
-# idle-router
-Shapeshift DAO's router for Idle Finance
+# ShapeShift DAOs Affiliate Router for Idle Finance
+
+# Getting Started
+
+1. yarn test
