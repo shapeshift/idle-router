@@ -1,0 +1,51 @@
+{
+  "name": "idle-router",
+  "version": "1.0.0",
+  "description": "ShapeShift DAOs Affiliate Router for Idle Finance",
+  "main": "index.js",
+  "repository": "git@github.com:shapeshift/idle-router.git",
+  "author": "0xean <0xean.eth@gmail.com>",
+  "license": "GPL-3.0",
+  "private": false,
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "console": "npx hardhat console",
+    "coverage": "npx hardhat coverage --temp artifacts",
+    "deploy": "npx hardhat deploy",
+    "lint": "yarn run prettier && yarn run lint:es6 && yarn run lint:solidity && yarn run lint:tests",
+    "lint:es6": "npx eslint ./*.js deploy/**/*.js src/utils/*.js",
+    "lint:solidity": "npx solhint src/**/*.sol",
+    "lint:tests": "npx eslint test/**/*.js test/*.js",
+    "prettier": "yarn run prettier:es6 && yarn run prettier:solidity && yarn run prettier:tests",
+    "prettier:es6": "prettier --write ./*.js --write deploy/**/*.js",
+    "prettier:solidity": "prettier --write src/**/*.sol --write src/**/**/*.sol",
+    "prettier:tests": "yarn compile && prettier --write test/**/*.js test/*.js",
+    "test": "yarn run prettier:tests && yarn run lint:tests && npx hardhat test"
+  },
+  "engines": {
+    "node": "=16.14.2",
+    "npm": ">=7.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "eslint": "^8.12.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-mocha": "^10.0.3",
+    "eslint-plugin-prettier": "^4.0.0",
+    "ethereum-waffle": "^3.4.4",
+    "hardhat": "^2.9.2",
+    "mocha": "^9.2.2",
+    "prettier-plugin-solidity": "^1.0.0-beta.19",
+    "solidity-coverage": "^0.7.20"
+  },
+  "dependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.5",
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "@openzeppelin/contracts": "^4.5.0",
+    "dotenv": "^16.0.0",
+    "ethers": "^5.6.2",
+    "hardhat-deploy": "^0.11.4"
+  }
+}
