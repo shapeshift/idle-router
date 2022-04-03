@@ -2,5 +2,8 @@
 pragma solidity 0.8.11;
 
 interface IIdleRegistry {
-    function tokenToIdleCDO(address underlyingToken) external view returns (address);
+    function tokenToIdleCDO(address underlyingToken)
+        external
+        view
+        returns (address);
 }
