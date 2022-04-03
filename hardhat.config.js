@@ -22,7 +22,13 @@ module.exports = {
   },
   networks: {
     hardhat: {
-      deploy: ["deploy/local", "deploy/core", "deploy/tic", "deploy/pools"],
+      deploy: ["deploy/core"],
+      chainId: 1,
+      forking: {
+        url: process.env.MAINNET_URL || "",
+        blockNumber: Number(process.env.FORK_BLOCK_NUMBER),
+        enabled: true, // Set to false to disable forked mainnet mode
+      },
     },
   },
   paths: {
