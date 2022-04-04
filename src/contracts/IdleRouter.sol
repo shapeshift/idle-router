@@ -46,6 +46,12 @@ contract IdleRouter is OwnableUpgradeable {
         emit IdleRegistryUpdated(_idleRegistry);
     }
 
+    /**
+     * @notice deposit tokens into the AA CDO Tranche. Note: approvals must be made before 
+     * this call to allow the router to move your assets on your behalf
+     * @param _token the underlying token for the CDO
+     * @param _amount of the underlying token to deposit
+     */
     function depositAA(address _token, uint256 _amount) external {
         _deposit(_token, _amount, true);
     }

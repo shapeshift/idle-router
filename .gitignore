@@ -106,3 +106,4 @@ cache/
 artifacts/
 deployments/
 .openzeppelin/
+coverage.json

@@ -142,6 +142,16 @@ describe("IdleRouter", () => {
           .depositAA(daiAAToken.address, amountToTransfer)
       ).to.be.revertedWith("IdleRouter: INVALID_TOKEN");
     });
+
+    it("reverts with an _amount of zero", async () => {
+      // TODO
+    });
+
+    it("send the correct amount to the user even if the contract has a balance of that token", () => {
+      // TODO
+      // Send some amount of the underlyingToken to the contract before we interact with it
+      // to ensure that even if someone does this by mistake or maliciously, all accounting still works
+    });
   });
 
   describe("depositBB", () => {
@@ -240,6 +250,16 @@ describe("IdleRouter", () => {
           .withdrawAA(daiToken.address, trancheTokenBalance)
       ).to.be.reverted;
     });
+
+    it("emits TokensWithdrew event", async () => {
+      // TODO
+    });
+
+    it("send the correct amount to the user even if the contract has a balance of that token", () => {
+      // TODO
+      // Send some amount of the trancheToken to the contract before we interact with it
+      // to ensure that even if someone does this by mistake or maliciously, all accounting still works
+    });
   });
 
   describe("withdrawBB", () => {
@@ -295,5 +315,18 @@ describe("IdleRouter", () => {
           .withdrawBB(daiToken.address, trancheTokenBalance)
       ).to.be.reverted;
     });
+  });
+
+  describe("can be upgraded", () => {
+    // TODO: bonus points for this one, create a mock V2 contract of the IdleRouter and
+    // upgrade our existing implementation and check that basic functionality works.
+    // the V2 can be live in the mocks folder and simply ad a new state variable or something.
+    // this can be done with HH upgrades with the following example.
+    // const IdleRouterV2 = await ethers.getContractFactory("IdleRouterV2");
+    // idleRouterV2 = await upgrades.upgradeProxy(
+    //   idleRouter.address,
+    //   IdleRouterV2
+    // );
+    // await idleRouterV2.deployed();
   });
 });
