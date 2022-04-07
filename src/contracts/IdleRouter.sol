@@ -65,7 +65,7 @@ contract IdleRouter is OwnableUpgradeable {
     }
 
     /**
-     * @notice deposit tokens into the AA CDO Tranche. Note: approvals must be made before
+     * @notice deposit tokens into the BB CDO Tranche. Note: approvals must be made before
      * this call to allow the router to move your assets on your behalf
      * @param _token the underlying token for the CDO
      * @param _amount of the underlying token to deposit
@@ -75,7 +75,8 @@ contract IdleRouter is OwnableUpgradeable {
     }
 
     /**
-     * @notice burn AA Tranche tokens and get the principal + interest back
+     * @notice burn AA Tranche tokens and get the principal + interest back. Note: approvals
+     * must be made before this call to allow the router to move your assets on your behalf
      * @param _amount of the AA Tranche token to burn
      */
     function withdrawAA(address _trancheTokenAA, uint256 _amount) external {
@@ -83,7 +84,8 @@ contract IdleRouter is OwnableUpgradeable {
     }
 
     /**
-     * @notice burn BB Tranche tokens and get the principal + interest back
+     * @notice burn BB Tranche tokens and get the principal + interest back. Note: approvals
+     * must be made before this call to allow the router to move your assets on your behalf
      * @param _amount of the BB Tranche token to burn
      */
     function withdrawBB(address _trancheTokenBB, uint256 _amount) external {
@@ -157,8 +159,8 @@ contract IdleRouter is OwnableUpgradeable {
     }
 
     /**
-     * @notice base function for withdrawing the underlying with interest
-     * Note: no approval required for withdrawal
+     * @notice base function for withdrawing the underlying with interest. Note: approvals
+     * must be made before this call to allow the router to move your assets on your behalf
      * @param _trancheTokenAddress the CDO Tranche token
      * @param _amount of the Tranche token token to burn
      * @param isAATranche set to true to withdraw from an AA Tranche,
