@@ -2,11 +2,11 @@ const { expect } = require("chai");
 const { ethers, upgrades } = require("hardhat");
 const ERC20 = require("@openzeppelin/contracts/build/contracts/ERC20.json");
 
-DAI_CDO_ADDRESS = "0xd0DbcD556cA22d3f3c142e9a3220053FD7a247BC";
-DAI_CDO_AA_TRANCHE = "0xe9ada97bdb86d827ecbaacca63ebcd8201d8b12e";
-DAI_CDO_BB_TRANCHE = "0x730348a54ba58f64295154f0662a08cbde1225c2";
-DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
-DAI_WHALE = "0xe78388b4ce79068e89bf8aa7f218ef6b9ab0e9d0";
+const DAI_CDO_ADDRESS = "0xd0DbcD556cA22d3f3c142e9a3220053FD7a247BC";
+const DAI_CDO_AA_TRANCHE = "0xe9ada97bdb86d827ecbaacca63ebcd8201d8b12e";
+const DAI_CDO_BB_TRANCHE = "0x730348a54ba58f64295154f0662a08cbde1225c2";
+const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
+const DAI_WHALE = "0xe78388b4ce79068e89bf8aa7f218ef6b9ab0e9d0";
 
 describe("IdleRouter", () => {
   let idleRouter;
@@ -144,13 +144,60 @@ describe("IdleRouter", () => {
     });
 
     it("reverts with an _amount of zero", async () => {
-      // TODO
+      const staker1 = accounts[1];
+      const amountToTransfer = 0;
+
+      await expect(
+        idleRouter
+          .connect(staker1)
+          .depositAA(daiToken.address, amountToTransfer)
+      ).to.be.revertedWith("IdleRouter: INVALID_AMOUNT");
     });
 
-    it("send the correct amount to the user even if the contract has a balance of that token", () => {
-      // TODO
-      // Send some amount of the underlyingToken to the contract before we interact with it
-      // to ensure that even if someone does this by mistake or maliciously, all accounting still works
+    it("send the correct amount to the user even if the contract has a balance of that token", async () => {
+      const staker1 = accounts[1];
+      const maliciousSender = accounts[2];
+
+      const amountToTransferBefore = ethers.utils.parseUnits("5", 18);
+      const amountToTransfer = ethers.utils.parseUnits("50", 18);
+
+      const daiMalSender = await daiToken.connect(maliciousSender);
+
+      await daiMalSender.transfer(idleRouter.address, amountToTransferBefore);
+
+      const initialDaiBalanceOfStaker1 = await daiToken.balanceOf(
+        staker1.address
+      );
+
+      await daiToken
+        .connect(staker1)
+        .approve(idleRouter.address, amountToTransfer.mul(2));
+
+      expect(await daiToken.balanceOf(idleRouter.address)).to.equal(
+        amountToTransferBefore
+      );
+      expect(await daiAAToken.balanceOf(staker1.address)).to.equal(0);
+
+      await idleRouter
+        .connect(staker1)
+        .depositAA(daiToken.address, amountToTransfer);
+      expect(await daiToken.balanceOf(idleRouter.address)).to.equal(
+        amountToTransferBefore
+      );
+
+      const expectedBalanceAfterDeposit =
+        initialDaiBalanceOfStaker1.sub(amountToTransfer);
+
+      expect(await daiToken.balanceOf(staker1.address)).to.equal(
+        expectedBalanceAfterDeposit
+      );
+      expect(await daiAAToken.balanceOf(staker1.address)).to.not.equal(0);
+
+      await expect(
+        await idleRouter
+          .connect(staker1)
+          .depositAA(daiToken.address, amountToTransfer)
+      ).to.emit(idleRouter, "TokensDeposited");
     });
   });
 
@@ -252,13 +299,67 @@ describe("IdleRouter", () => {
     });
 
     it("emits TokensWithdrew event", async () => {
-      // TODO
+      const staker1 = accounts[1];
+      const amountToTransfer = ethers.utils.parseUnits("50", 18);
+
+      await daiToken
+        .connect(staker1)
+        .approve(idleRouter.address, amountToTransfer.mul(2));
+      expect(await daiAAToken.balanceOf(staker1.address)).to.equal(0);
+      await idleRouter
+        .connect(staker1)
+        .depositAA(daiToken.address, amountToTransfer);
+
+      const trancheTokenBalance = await daiAAToken.balanceOf(staker1.address);
+      await daiAAToken
+        .connect(staker1)
+        .approve(idleRouter.address, trancheTokenBalance);
+
+      await expect(
+        await idleRouter
+          .connect(staker1)
+          .withdrawAA(daiAAToken.address, trancheTokenBalance)
+      ).to.emit(idleRouter, "TokensWithdrew");
     });
 
-    it("send the correct amount to the user even if the contract has a balance of that token", () => {
-      // TODO
-      // Send some amount of the trancheToken to the contract before we interact with it
-      // to ensure that even if someone does this by mistake or maliciously, all accounting still works
+    it("send the correct amount to the user even if the contract has a balance of that token", async () => {
+      const staker1 = accounts[1];
+      const maliciousSender = accounts[2];
+
+      const amountToTransferBefore = ethers.utils.parseUnits("5", 18);
+      const amountToTransfer = ethers.utils.parseUnits("50", 18);
+
+      const daiMalSender = await daiToken.connect(maliciousSender);
+
+      await daiMalSender.transfer(idleRouter.address, amountToTransferBefore);
+
+      const initialDaiBalanceOfStaker1 = await daiToken.balanceOf(
+        staker1.address
+      );
+
+      await daiToken
+        .connect(staker1)
+        .approve(idleRouter.address, amountToTransfer.mul(2));
+      expect(await daiAAToken.balanceOf(staker1.address)).to.equal(0);
+      await idleRouter
+        .connect(staker1)
+        .depositAA(daiToken.address, amountToTransfer);
+
+      const trancheTokenBalance = await daiAAToken.balanceOf(staker1.address);
+      await daiAAToken
+        .connect(staker1)
+        .approve(idleRouter.address, trancheTokenBalance);
+      await idleRouter
+        .connect(staker1)
+        .withdrawAA(daiAAToken.address, trancheTokenBalance);
+
+      // should get back more token then deposited.
+      expect(
+        (await daiToken.balanceOf(staker1.address)).gt(
+          initialDaiBalanceOfStaker1
+        )
+      );
+      expect(await daiAAToken.balanceOf(staker1.address)).to.equal(0);
     });
   });
 
@@ -318,15 +419,75 @@ describe("IdleRouter", () => {
   });
 
   describe("can be upgraded", () => {
-    // TODO: bonus points for this one, create a mock V2 contract of the IdleRouter and
-    // upgrade our existing implementation and check that basic functionality works.
-    // the V2 can be live in the mocks folder and simply ad a new state variable or something.
-    // this can be done with HH upgrades with the following example.
-    // const IdleRouterV2 = await ethers.getContractFactory("IdleRouterV2");
-    // idleRouterV2 = await upgrades.upgradeProxy(
-    //   idleRouter.address,
-    //   IdleRouterV2
-    // );
-    // await idleRouterV2.deployed();
+    it("upgrades successfully", async () => {
+      const IdleRouterV2 = await ethers.getContractFactory("IdleRouterV2");
+      const idleRouterV2 = await upgrades.upgradeProxy(
+        idleRouter.address,
+        IdleRouterV2
+      );
+
+      await idleRouterV2.deployed();
+      await idleRouterV2.setUpgraded(true);
+
+      expect(await idleRouter.isUpgraded).to.equal(undefined);
+      expect(await idleRouterV2.isUpgraded()).to.equal(true);
+    });
+
+    it("deposit succeeds for a token in the registry after an upgrade", async () => {
+      const IdleRouterV2 = await ethers.getContractFactory("IdleRouterV2");
+      const idleRouterV2 = await upgrades.upgradeProxy(
+        idleRouter.address,
+        IdleRouterV2
+      );
+
+      await idleRouterV2.deployed();
+
+      const staker1 = accounts[1];
+      const amountToTransfer = ethers.utils.parseUnits("50", 18);
+      const initialDaiBalanceOfStaker1 = await daiToken.balanceOf(
+        staker1.address
+      );
+      await daiToken
+        .connect(staker1)
+        .approve(idleRouter.address, amountToTransfer.mul(2));
+
+      expect(await daiToken.balanceOf(idleRouterV2.address)).to.equal(0);
+      expect(await daiAAToken.balanceOf(staker1.address)).to.equal(0);
+      await idleRouterV2
+        .connect(staker1)
+        .depositAA(daiToken.address, amountToTransfer);
+      expect(await daiToken.balanceOf(idleRouterV2.address)).to.equal(0);
+
+      const expectedBalanceAfterDeposit =
+        initialDaiBalanceOfStaker1.sub(amountToTransfer);
+      expect(await daiToken.balanceOf(staker1.address)).to.equal(
+        expectedBalanceAfterDeposit
+      );
+      expect(await daiAAToken.balanceOf(staker1.address)).to.not.equal(0);
+
+      await expect(
+        await idleRouterV2
+          .connect(staker1)
+          .depositAA(daiToken.address, amountToTransfer)
+      ).to.emit(idleRouterV2, "TokensDeposited");
+    });
+
+    it("deposit reverts for a token not in the registry after an upgrade", async () => {
+      const IdleRouterV2 = await ethers.getContractFactory("IdleRouterV2");
+      const idleRouterV2 = await upgrades.upgradeProxy(
+        idleRouter.address,
+        IdleRouterV2
+      );
+
+      await idleRouterV2.deployed();
+
+      const staker1 = accounts[1];
+      const amountToTransfer = ethers.utils.parseUnits("50", 18);
+      await expect(
+        idleRouterV2
+          .connect(staker1)
+          .depositAA(daiAAToken.address, amountToTransfer)
+      ).to.be.revertedWith("IdleRouter: INVALID_TOKEN");
+    });
   });
 });

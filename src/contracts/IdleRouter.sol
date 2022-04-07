@@ -32,11 +32,19 @@ contract IdleRouter is OwnableUpgradeable {
 
     constructor() {}
 
+    /**
+     * @notice initialize contract and set the idleRegistry address
+     * @param _idleRegistry address of the token-to-CDO registry 
+     */
     function initialize(address _idleRegistry) external initializer {
         OwnableUpgradeable.__Ownable_init();
         setIdleRegistry(_idleRegistry);
     }
 
+    /**
+     * @notice change the idleRegistry address
+     * @param _idleRegistry new address of the token-to-CDO registry 
+     */
     function setIdleRegistry(address _idleRegistry) public onlyOwner {
         require(
             _idleRegistry != address(0) && _idleRegistry != idleRegistry,
@@ -56,18 +64,40 @@ contract IdleRouter is OwnableUpgradeable {
         _deposit(_token, _amount, true);
     }
 
+    /**
+     * @notice deposit tokens into the AA CDO Tranche. Note: approvals must be made before
+     * this call to allow the router to move your assets on your behalf
+     * @param _token the underlying token for the CDO
+     * @param _amount of the underlying token to deposit
+     */
     function depositBB(address _token, uint256 _amount) external {
         _deposit(_token, _amount, false);
     }
 
+    /**
+     * @notice burn AA Tranche tokens and get the principal + interest back
+     * @param _amount of the AA Tranche token to burn
+     */
     function withdrawAA(address _trancheTokenAA, uint256 _amount) external {
         _withdraw(_trancheTokenAA, _amount, true);
     }
 
+    /**
+     * @notice burn BB Tranche tokens and get the principal + interest back
+     * @param _amount of the BB Tranche token to burn
+     */
     function withdrawBB(address _trancheTokenBB, uint256 _amount) external {
         _withdraw(_trancheTokenBB, _amount, false);
     }
 
+    /**
+     * @notice base function for depositing tokens into the CDO Tranches. Note: approvals
+     * must be made before this call to allow the router to move your assets on your behalf
+     * @param _token the underlying token for the CDO
+     * @param _amount of the underlying token to deposit
+     * @param isAATranche set to true to deposit into an AA Tranche,
+     * set to false to deposit into a BB Tranche 
+     */
     function _deposit(
         address _token,
         uint256 _amount,
@@ -126,6 +156,14 @@ contract IdleRouter is OwnableUpgradeable {
         );
     }
 
+    /**
+     * @notice base function for withdrawing the underlying with interest
+     * Note: no approval required for withdrawal
+     * @param _trancheTokenAddress the CDO Tranche token
+     * @param _amount of the Tranche token token to burn
+     * @param isAATranche set to true to withdraw from an AA Tranche,
+     * set to false to withdraw from a BB Tranche 
+     */
     function _withdraw(
         address _trancheTokenAddress,
         uint256 _amount,
