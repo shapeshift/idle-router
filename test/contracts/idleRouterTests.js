@@ -103,7 +103,7 @@ describe("IdleRouter", () => {
   });
 
   describe("depositAA", () => {
-    it("succeeds for a token in the registry", async () => {
+    it("succeeds for a CDO in the registry", async () => {
       const staker1 = accounts[1];
       const amountToTransfer = ethers.utils.parseUnits("50", 18);
       const initialDaiBalanceOfStaker1 = await daiToken.balanceOf(
@@ -141,7 +141,7 @@ describe("IdleRouter", () => {
         idleRouter
           .connect(staker1)
           .depositAA(daiAAToken.address, amountToTransfer)
-      ).to.be.revertedWith("IdleRegistry: INVALID_CDO");
+      ).to.be.revertedWith("IdleRouter: INVALID_CDO");
     });
 
     it("reverts with an _amount of zero", async () => {
@@ -154,7 +154,7 @@ describe("IdleRouter", () => {
     });
 
     it("reverts for an incorrect underlying token in the registy", async () => {
-      // set an incorrect CDO / underlying token pair
+      // set an incorrect CDO -> underlying token pair
       await idleRegistry.setIdleCdo(DAI_CDO_ADDRESS, BUSD_ADDRESS);
 
       const staker1 = accounts[1];
@@ -213,7 +213,7 @@ describe("IdleRouter", () => {
   });
 
   describe("depositBB", () => {
-    it("succeeds for a token in the registry", async () => {
+    it("succeeds for a CDO in the registry", async () => {
       const staker1 = accounts[1];
       const amountToTransfer = ethers.utils.parseUnits("50", 18);
       const initialDaiBalanceOfStaker1 = await daiToken.balanceOf(
@@ -251,12 +251,12 @@ describe("IdleRouter", () => {
         idleRouter
           .connect(staker1)
           .depositBB(daiAAToken.address, amountToTransfer)
-      ).to.be.revertedWith("IdleRegistry: INVALID_CDO");
+      ).to.be.revertedWith("IdleRouter: INVALID_CDO");
     });
   });
 
   describe("withdrawAA", () => {
-    it("succeeds for a token in the registry", async () => {
+    it("succeeds for a CDO in the registry", async () => {
       const staker1 = accounts[1];
       const amountToTransfer = ethers.utils.parseUnits("50", 18);
       const initialDaiBalanceOfStaker1 = await daiToken.balanceOf(
@@ -375,7 +375,7 @@ describe("IdleRouter", () => {
   });
 
   describe("withdrawBB", () => {
-    it("succeeds for a token in the registry", async () => {
+    it("succeeds for a CDO in the registry", async () => {
       const staker1 = accounts[1];
       const amountToTransfer = ethers.utils.parseUnits("50", 18);
       const initialDaiBalanceOfStaker1 = await daiToken.balanceOf(
@@ -444,7 +444,7 @@ describe("IdleRouter", () => {
       expect(await idleRouterV2.isUpgraded()).to.equal(true);
     });
 
-    it("deposit succeeds for a token in the registry after an upgrade", async () => {
+    it("deposit succeeds for a CDO in the registry after an upgrade", async () => {
       const IdleRouterV2 = await ethers.getContractFactory("IdleRouterV2");
       const idleRouterV2 = await upgrades.upgradeProxy(
         idleRouter.address,
@@ -498,7 +498,7 @@ describe("IdleRouter", () => {
         idleRouterV2
           .connect(staker1)
           .depositAA(daiAAToken.address, amountToTransfer)
-      ).to.be.revertedWith("IdleRegistry: INVALID_CDO");
+      ).to.be.revertedWith("IdleRouter: INVALID_CDO");
     });
   });
 });

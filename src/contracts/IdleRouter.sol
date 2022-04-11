@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.11;
+pragma solidity 0.8.11;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
@@ -111,7 +111,7 @@ contract IdleRouter is OwnableUpgradeable {
             _cdo
         );
 
-        require(IIdleRegistry(idleRegistry).isValidCdo(_cdo), "IdleRegistry: INVALID_CDO");
+        require(tokenAddress != address(0), "IdleRouter: INVALID_CDO");
         require(_amount != 0, "IdleRouter: INVALID_AMOUNT");
 
         IIdleCDO idleCdo = IIdleCDO(_cdo);
@@ -156,7 +156,7 @@ contract IdleRouter is OwnableUpgradeable {
         emit TokensDeposited(
             msg.sender,
             address(underlyingToken),
-            address(trancheToken),
+            tokenAddress,
             _amount
         );
     }
