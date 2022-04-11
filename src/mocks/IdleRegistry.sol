@@ -15,11 +15,7 @@ contract IdleRegistry is Ownable {
         idleCdoToToken[idleCdo] = underlyingToken;
     }
 
-    function isValidCdo(address _cdo)
-        external
-        view
-        returns(bool)
-    {
+    function isValidCdo(address _cdo) external view returns (bool) {
         return idleCdoToToken[_cdo] != address(0);
     }
 }

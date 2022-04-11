@@ -7,6 +7,6 @@ contract IdleRouterV2 is IdleRouter {
     bool public isUpgraded;
 
     function setUpgraded(bool _isUpgraded) external {
-      isUpgraded = _isUpgraded;
+        isUpgraded = _isUpgraded;
     }
 }
