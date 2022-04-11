@@ -21,10 +21,10 @@ module.exports = {
     "no-use-before-define": "warn",
     "no-undef": "warn",
     "object-curly-newline": 0,
-    "quotes": [2, "double"],
-    "operator-linebreak" : 0,
-    "no-param-reassign" : 0,
-    "no-unused-expressions" :0,
-    "prettier/prettier": ["error"]
+    quotes: [2, "double"],
+    "operator-linebreak": 0,
+    "no-param-reassign": 0,
+    "no-unused-expressions": 0,
+    "prettier/prettier": ["error"],
   },
 };
