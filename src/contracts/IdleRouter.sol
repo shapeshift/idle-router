@@ -115,11 +115,6 @@ contract IdleRouter is OwnableUpgradeable {
         IIdleCDO idleCdo = IIdleCDO(_cdo);
         address tokenAddress = idleCdo.token();
 
-        require(
-            idleCdo.token() == tokenAddress,
-            "IdleRouter: UNDERLYING_TOKEN_MISMATCH"
-        );
-
         IERC20Upgradeable trancheToken = IERC20Upgradeable(
             isAATranche ? idleCdo.AATranche() : idleCdo.BBTranche()
         );
@@ -177,7 +172,7 @@ contract IdleRouter is OwnableUpgradeable {
         address idleCDOAddress = IIdleCDOTranche(_trancheTokenAddress).minter();
         require(
             IIdleRegistry(idleRegistry).isValidCdo(idleCDOAddress),
-            "IdleRouter: INVALID_TOKEN"
+            "IdleRouter: INVALID_CDO"
         );
 
         IIdleCDO idleCdo = IIdleCDO(idleCDOAddress);
