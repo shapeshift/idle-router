@@ -107,12 +107,13 @@ contract IdleRouter is OwnableUpgradeable {
         uint256 _amount,
         bool isAATranche
     ) internal {
-        address tokenAddress = IIdleRegistry(idleRegistry).idleCdoToToken(_cdo);
-
-        require(tokenAddress != address(0), "IdleRouter: INVALID_CDO");
+        require(
+            IIdleRegistry(idleRegistry).isValidCdo(_cdo),
+            "IdleRouter: INVALID_CDO"
+        );
         require(_amount != 0, "IdleRouter: INVALID_AMOUNT");
-
         IIdleCDO idleCdo = IIdleCDO(_cdo);
+        address tokenAddress = idleCdo.token();
 
         require(
             idleCdo.token() == tokenAddress,

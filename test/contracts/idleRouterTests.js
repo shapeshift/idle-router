@@ -7,7 +7,6 @@ const DAI_CDO_AA_TRANCHE = "0xe9ada97bdb86d827ecbaacca63ebcd8201d8b12e";
 const DAI_CDO_BB_TRANCHE = "0x730348a54ba58f64295154f0662a08cbde1225c2";
 const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
 const DAI_WHALE = "0xe78388b4ce79068e89bf8aa7f218ef6b9ab0e9d0";
-const BUSD_ADDRESS = "0x4Fabb145d64652a948d72533023f6E7A623C7C53";
 
 describe("IdleRouter", () => {
   let idleRouter;
@@ -37,7 +36,7 @@ describe("IdleRouter", () => {
     await idleRegistry.deployed();
 
     // add an example CDO to interact with
-    await idleRegistry.setIdleCdo(DAI_CDO_ADDRESS, DAI_ADDRESS);
+    await idleRegistry.setIdleCdo(DAI_CDO_ADDRESS);
 
     // add dai to needed accounts
     await network.provider.request({
@@ -151,18 +150,6 @@ describe("IdleRouter", () => {
       await expect(
         idleRouter.connect(staker1).depositAA(DAI_CDO_ADDRESS, amountToTransfer)
       ).to.be.revertedWith("IdleRouter: INVALID_AMOUNT");
-    });
-
-    it("reverts for an incorrect underlying token in the registy", async () => {
-      // set an incorrect CDO -> underlying token pair
-      await idleRegistry.setIdleCdo(DAI_CDO_ADDRESS, BUSD_ADDRESS);
-
-      const staker1 = accounts[1];
-      const amountToTransfer = ethers.utils.parseUnits("50", 18);
-
-      await expect(
-        idleRouter.connect(staker1).depositAA(DAI_CDO_ADDRESS, amountToTransfer)
-      ).to.be.revertedWith("IdleRouter: UNDERLYING_TOKEN_MISMATCH");
     });
 
     it("sends the correct amount to the user even if the contract has a balance of that token", async () => {
