@@ -99,13 +99,13 @@ contract IdleRouter is OwnableUpgradeable {
      * must be made before this call to allow the router to move your assets on your behalf
      * @param _cdo address of the CDO contract
      * @param _amount of the underlying token to deposit
-     * @param isAATranche set to true to deposit into an AA Tranche,
+     * @param _isAATranche set to true to deposit into an AA Tranche,
      * set to false to deposit into a BB Tranche
      */
     function _deposit(
         address _cdo,
         uint256 _amount,
-        bool isAATranche
+        bool _isAATranche
     ) internal {
         require(
             IIdleRegistry(idleRegistry).isValidCdo(_cdo),
@@ -116,7 +116,7 @@ contract IdleRouter is OwnableUpgradeable {
         address tokenAddress = idleCdo.token();
 
         IERC20Upgradeable trancheToken = IERC20Upgradeable(
-            isAATranche ? idleCdo.AATranche() : idleCdo.BBTranche()
+            _isAATranche ? idleCdo.AATranche() : idleCdo.BBTranche()
         );
 
         IERC20Upgradeable underlyingToken = IERC20Upgradeable(tokenAddress);
@@ -136,7 +136,7 @@ contract IdleRouter is OwnableUpgradeable {
             underlyingToken.safeApprove(_cdo, type(uint256).max);
         }
 
-        uint256 qtyMinted = isAATranche
+        uint256 qtyMinted = _isAATranche
             ? idleCdo.depositAA(_amount)
             : idleCdo.depositBB(_amount);
         trancheToken.safeTransfer(msg.sender, qtyMinted);
@@ -161,13 +161,13 @@ contract IdleRouter is OwnableUpgradeable {
      * must be made before this call to allow the router to move your assets on your behalf
      * @param _trancheTokenAddress the CDO Tranche token address
      * @param _amount of the Tranche token token to burn
-     * @param isAATranche set to true to withdraw from an AA Tranche,
+     * @param _isAATranche set to true to withdraw from an AA Tranche,
      * set to false to withdraw from a BB Tranche
      */
     function _withdraw(
         address _trancheTokenAddress,
         uint256 _amount,
-        bool isAATranche
+        bool _isAATranche
     ) internal {
         address idleCDOAddress = IIdleCDOTranche(_trancheTokenAddress).minter();
         require(
@@ -196,7 +196,7 @@ contract IdleRouter is OwnableUpgradeable {
         trancheToken.transferFrom(msg.sender, address(this), _amount);
 
         // Note: no approval required for withdrawal!
-        uint256 amountToReturn = isAATranche
+        uint256 amountToReturn = _isAATranche
             ? idleCdo.withdrawAA(_amount)
             : idleCdo.withdrawBB(_amount);
 
