@@ -15,18 +15,6 @@ contract IdleRouter is OwnableUpgradeable {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
     event IdleRegistryUpdated(address newRegistry);
-    event TokensDeposited(
-        address indexed user,
-        address indexed token,
-        address indexed trancheToken,
-        uint256 amountOfTokenDeposited
-    );
-    event TokensWithdrew(
-        address indexed user,
-        address indexed token,
-        address indexed trancheToken,
-        uint256 amountOfTrancheTokenWithdrew
-    );
 
     address public idleRegistry;
 
@@ -147,13 +135,6 @@ contract IdleRouter is OwnableUpgradeable {
                 underlyingTokenBalanceBefore ==
                 underlyingToken.balanceOf(address(this))
         );
-
-        emit TokensDeposited(
-            msg.sender,
-            address(underlyingToken),
-            tokenAddress,
-            _amount
-        );
     }
 
     /**
@@ -207,13 +188,6 @@ contract IdleRouter is OwnableUpgradeable {
                 trancheToken.balanceOf(address(this)) &&
                 underlyingTokenBalanceBefore ==
                 underlyingToken.balanceOf(address(this))
-        );
-
-        emit TokensWithdrew(
-            msg.sender,
-            address(underlyingToken),
-            _trancheTokenAddress,
-            _amount
         );
     }
 }

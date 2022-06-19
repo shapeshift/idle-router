@@ -126,11 +126,9 @@ describe("IdleRouter", () => {
       );
       expect(await daiAAToken.balanceOf(staker1.address)).to.not.equal(0);
 
-      await expect(
-        await idleRouter
-          .connect(staker1)
-          .depositAA(DAI_CDO_ADDRESS, amountToTransfer)
-      ).to.emit(idleRouter, "TokensDeposited");
+      await idleRouter
+        .connect(staker1)
+        .depositAA(DAI_CDO_ADDRESS, amountToTransfer);
     });
 
     it("reverts for a CDO not in the registry", async () => {
@@ -191,11 +189,9 @@ describe("IdleRouter", () => {
       );
       expect(await daiAAToken.balanceOf(staker1.address)).to.not.equal(0);
 
-      await expect(
-        await idleRouter
-          .connect(staker1)
-          .depositAA(DAI_CDO_ADDRESS, amountToTransfer)
-      ).to.emit(idleRouter, "TokensDeposited");
+      await idleRouter
+        .connect(staker1)
+        .depositAA(DAI_CDO_ADDRESS, amountToTransfer);
     });
   });
 
@@ -224,11 +220,9 @@ describe("IdleRouter", () => {
       );
       expect(await daiBBToken.balanceOf(staker1.address)).to.not.equal(0);
 
-      await expect(
-        await idleRouter
-          .connect(staker1)
-          .depositBB(DAI_CDO_ADDRESS, amountToTransfer)
-      ).to.emit(idleRouter, "TokensDeposited");
+      await idleRouter
+        .connect(staker1)
+        .depositBB(DAI_CDO_ADDRESS, amountToTransfer);
     });
 
     it("reverts for a CDO not in the registry", async () => {
@@ -294,30 +288,6 @@ describe("IdleRouter", () => {
           .connect(staker1)
           .withdrawAA(daiToken.address, trancheTokenBalance)
       ).to.be.reverted;
-    });
-
-    it("emits TokensWithdrew event", async () => {
-      const staker1 = accounts[1];
-      const amountToTransfer = ethers.utils.parseUnits("50", 18);
-
-      await daiToken
-        .connect(staker1)
-        .approve(idleRouter.address, amountToTransfer.mul(2));
-      expect(await daiAAToken.balanceOf(staker1.address)).to.equal(0);
-      await idleRouter
-        .connect(staker1)
-        .depositAA(DAI_CDO_ADDRESS, amountToTransfer);
-
-      const trancheTokenBalance = await daiAAToken.balanceOf(staker1.address);
-      await daiAAToken
-        .connect(staker1)
-        .approve(idleRouter.address, trancheTokenBalance);
-
-      await expect(
-        await idleRouter
-          .connect(staker1)
-          .withdrawAA(daiAAToken.address, trancheTokenBalance)
-      ).to.emit(idleRouter, "TokensWithdrew");
     });
 
     it("sends the correct amount to the user even if the contract has a balance of that token", async () => {
@@ -463,11 +433,9 @@ describe("IdleRouter", () => {
       );
       expect(await daiAAToken.balanceOf(staker1.address)).to.not.equal(0);
 
-      await expect(
-        await idleRouterV2
-          .connect(staker1)
-          .depositAA(DAI_CDO_ADDRESS, amountToTransfer)
-      ).to.emit(idleRouterV2, "TokensDeposited");
+      await idleRouterV2
+        .connect(staker1)
+        .depositAA(DAI_CDO_ADDRESS, amountToTransfer);
     });
 
     it("deposit reverts for a CDO not in the registry after an upgrade", async () => {

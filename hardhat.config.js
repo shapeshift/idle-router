@@ -3,6 +3,7 @@ require("hardhat-deploy");
 require("solidity-coverage");
 require("dotenv").config();
 require("@openzeppelin/hardhat-upgrades");
+require("hardhat-gas-reporter");
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
@@ -45,7 +46,7 @@ module.exports = {
     runOnCompile: false,
   },
   gasReporter: {
-    enabled: false,
+    enabled: true,
     currency: "USD",
   },
 };
