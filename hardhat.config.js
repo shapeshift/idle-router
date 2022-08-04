@@ -31,6 +31,18 @@ module.exports = {
         enabled: true, // Set to false to disable forked mainnet mode
       },
     },
+    mainnet: {
+      url: process.env.MAINNET_URL || "",
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      gasPrice: "auto"
+    },
+    goerli: {
+      url: process.env.GOERLI_URL || "",
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      gasPrice: "auto"
+    },
   },
   paths: {
     deploy: ["deploy/core"],
